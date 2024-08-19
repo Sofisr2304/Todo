@@ -1,25 +1,27 @@
 <script>
-  import BannerDark from "$lib/images/bg-desktop-dark.jpg"
-  import BannerLight from "$lib/images/bg-desktop-light.jpg"
-  import IconMoon from "$lib/images/icon-moon.svg"
-  import IconSun from "$lib/images/icon-sun.svg"
+  import BannerDark from "$lib/images/bg-desktop-dark.jpg";
+  import BannerLight from "$lib/images/bg-desktop-light.jpg";
+  import IconCross from "$lib/images/icon-cross.svg";
+  import IconPencil from "$lib/images/icon-pencil.svg";
+  import IconMoon from "$lib/images/icon-moon.svg";
+  import IconSun from "$lib/images/icon-sun.svg";
 
   let todos = [];
   let todosTemp = [];
   let filterSelected = 'all';
   let currentTheme = 'dark';
-  
+
   const onKeyPress = (e) => {
     if (e.key === 'Enter') {
       const task = {
         id: Math.random(),
         text: e.target.value,
         completed: false
-      }
+      };
       todos = [...todos, task];
       e.target.value = '';
     }
-  }
+  };
 
   const filterTodos = (filter) => {
     filterSelected = filter;
@@ -36,22 +38,26 @@
     } else {
       todos = todosTemp;
     }
-  }
+  };
 
   const clearCompleted = () => {
     if (todos.length === 0) {
       return;
-    } 
+    }
     todos = todos.filter(todo => !todo.completed);
     todosTemp = todos;
-  }
+  };
 
   const changeTheme = () => {
     currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  }
+  };
+
+  const deleteTask = (id) => {
+    todos = todos.filter(todo => todo.id !== id);
+    todosTemp = todos;
+  };
 
   $: todosLeft = todos.filter(todo => !todo.completed).length;
-
 </script>
 
 <style>
@@ -88,17 +94,20 @@
 
   .banner {
     height: 30vh;
-    & .icon-theme {
-      cursor: pointer;
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-    }
-    & .img-banner {
-      cursor: pointer;
-      width: 100%;
-      height: 30vh;
-    }
+    position: relative;
+  }
+
+  .icon-theme {
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .img-banner {
+    cursor: pointer;
+    width: 100%;
+    height: 30vh;
   }
 
   .todo-container {
@@ -114,7 +123,7 @@
     font: inherit;
     outline: none;
     color: light-dark(var(--very-dark-grayish-blue), var(--light-grayish-blue));
-    background-color: light-dark(var(--very-light-gray) , var(--very-dark-desaturated-blue));
+    background-color: light-dark(var(--very-light-gray), var(--very-dark-desaturated-blue));
     font-size: 2rem;
     padding: 1rem 1.5rem;
     border: 0;
@@ -128,60 +137,93 @@
     padding: 2rem;
   }
 
-  /* Todo List */
   .todo-list {
     margin-bottom: 0;
     list-style: none;
     background-color: light-dark(var(--very-light-gray), var(--very-dark-desaturated-blue));
     border-radius: 5px;
     padding: 0;
-    & li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid light-dark(var(--light-grayish-blue), var(--very-dark-grayish-blue-1));
-    }
-    & label {
-      cursor: pointer;
-      color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
-      font-size: 18px;
-    }
-    & input[type="checkbox"]:checked + label {
-      color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
-      text-decoration: line-through;
-    }
   }
 
-  /* Filters */
+  .todo-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid light-dark(var(--light-grayish-blue), var(--very-dark-grayish-blue-1));
+  }
+
+  .label-task {
+    display: flex;
+    align-items: center;
+  }
+
+  .label-task label {
+    cursor: pointer;
+    color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
+    font-size: 18px;
+  }
+
+  .label-task input[type="checkbox"]:checked + label {
+    color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
+    text-decoration: line-through;
+  }
+
+  .input-edit-task {
+    font: inherit;
+    outline: none;
+    color: light-dark(var(--very-dark-grayish-blue), var(--light-grayish-blue));
+    background-color: light-dark(var(--very-light-gray), var(--very-dark-desaturated-blue));
+    font-size: 18px;
+    padding: 0.5rem 1rem;
+    border: 0;
+    box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+  }
+
+  .buttons-task {
+    display: flex;
+    align-items: center;
+  }
+
+  .buttons-task button {
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+  }
+
   .todo-filters {
     background-color: light-dark(var(--very-light-gray), var(--very-dark-desaturated-blue));
     padding: 1rem 1.5rem;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    & span {
-      color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
-    }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    & button {
-      font: inherit;
-      cursor: pointer;
-      border: 0;
-      background-color: transparent;
-      color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
-    }
+  .todo-filters span {
+    color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
+  }
 
-    & button:hover {
-      color: light-dark(var(--very-dark-grayish-blue), var(--light-grayish-blue-hover));
-    }
+  .todo-filters button {
+    font: inherit;
+    cursor: pointer;
+    border: 0;
+    background-color: transparent;
+    color: light-dark(var(--dark-grayish-blue), var(--light-grayish-blue));
+  }
 
-    & button:focus {
-      outline: none;
-    }
+  .todo-filters button:hover {
+    color: light-dark(var(--very-dark-grayish-blue), var(--light-grayish-blue-hover));
+  }
 
-    & button:active {
-      transform: scale(0.95);
-    }
+  .todo-filters button:focus {
+    outline: none;
+  }
+
+  .todo-filters button:active {
+    transform: scale(0.95);
   }
 
   .icon-cross {
@@ -200,54 +242,84 @@
   .light {
     color-scheme: light;
   }
-
 </style>
 
-<div class={`container ${currentTheme}`}>
-  <div class="banner">
+<section class={`container ${currentTheme}`}>
+  <header class="banner">
     <img class="img-banner" src={currentTheme === 'dark' ? BannerDark : BannerLight} alt="Dark Mode" />
     <img
       on:click={changeTheme}
       class="icon-theme"
       src={currentTheme === 'dark' ? IconSun : IconMoon} alt="Dark Mode"
     />
-  </div>
+  </header>
 
-  <div class="todo-container">
+  <main class="todo-container">
     <div class="todo-center">
       <input
         class="todo-input"
         type="text"
         placeholder="Create a new todo..."
         on:keypress={onKeyPress}
-      >
+      />
 
       {#if todos.length > 0}
         <ul class="todo-list">
           {#each todos as todo}
             <li>
-              <div>
+              <div class="label-task">
                 <input
                   type="checkbox"
                   id={todo.id}
                   checked={todo.completed}
                   on:change={() => todo.completed = !todo.completed}
                 />
-                <label for={todo.id}>{todo.text}</label>
+                {#if todo.isEditing}
+                  <input
+                    class="input-edit-task"
+                    type="text"
+                    value={todo.text}
+                    on:input={(e) => todo.text = e.target.value}
+                    on:blur={() => todo.isEditing = false}
+                    on:keypress={(e) => {
+                      if (e.key === 'Enter') {
+                        todo.isEditing = false;
+                      }
+                    }}
+                    id={`${todo.id}-edit`}
+                  />
+                {:else}
+                  <label for={todo.id}>{todo.text}</label>
+                {/if}
+              </div>
+              <div class="buttons-task">
+                <button class="button-edit-task" on:click={() => {
+                  todo.isEditing = !todo.isEditing;
+                  setTimeout(() => {
+                    const input = document.getElementById(`${todo.id}-edit`);
+                    if (todo.isEditing && input) {
+                      input.focus();
+                    }
+                  }, 0);
+                }}>
+                  <img src={IconPencil} alt="edit task">
+                </button>
+                <button class="delete-task" on:click={deleteTask(todo.id)}>
+                  <img src={IconCross} alt="delete task">
+                </button>
               </div>
             </li>
           {/each}
         </ul>
-    
       {/if}
-    
-      <div class="todo-filters">
+
+      <footer class="todo-filters">
         <span>{todosLeft} items left</span>
-        <button on:click={() => filterTodos('all')} class={filterSelected === 'all' && 'active'} >All</button>
+        <button on:click={() => filterTodos('all')} class={filterSelected === 'all' && 'active'}>All</button>
         <button on:click={() => filterTodos('active')} class={filterSelected === 'active' && 'active'}>Active</button>
         <button on:click={() => filterTodos('completed')} class={filterSelected === 'completed' && 'active'}>Completed</button>
         <button on:click={clearCompleted}>Clear Completed</button>
-      </div>
+      </footer>
     </div>
-  </div>
-</div>
+  </main>
+</section>
